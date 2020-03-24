@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="library.scss">
+    <title>Library</title>
+  </head>
+  <body>
+    <h2>Odin's Book Library</h2>
+    <div id="error-message" style="display: none">
+      <p>Invalid entry. Please make sure all fields have been filled out properly.</p>
+    </div>
+    <div class="container">
+      <table class="library-table">
+        <tbody class="library-table-body">
+          <tr>
+            <th class="table-title">Title</th>
+            <th class="table-author">Author</th>
+            <th class="table-pages">Pages</th>
+            <th class="table-read">Read?</th>
+            <th class="table-delete"></th>
+          </tr>
+        </tbody>
+      </table>
+      <button id="btn-add-book">Add Book</button>
+    </div>
+    <div class="container form-container">
+      <form id="book-form" style="display: none">
+        <input type="text" id="book-form-title" placeholder="Book's Title" required>
+        <input type="text" id="book-form-author" placeholder="Book's Author" required>
+        <input type="text" id="book-form-pages" placeholder="No. of Pages" required>
+        <input type="button" id="book-form-btn" value="Add Book">
+      </form>
+    </div>
+  </body>
+  <script src="library.js"></script>
+</html>

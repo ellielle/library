@@ -1,0 +1,46 @@
+.container {
+  padding: 20px 15px 0 15px;
+  display: flex;
+}
+
+.form-container {
+
+}
+
+/* Body */
+
+h2 {
+  margin-top: 40px;
+  text-align: center;
+}
+
+table {
+  width: 50%;
+  margin: 20px auto;
+  text-align: center;
+}
+
+#error-message {
+  text-align: center;
+  color: red;
+}
+
+/* Form */
+
+
+/* Buttons */
+
+.delete-image {
+  height: 15px;
+  width: auto;
+}
+
+.delete-image:hover {
+  cursor: pointer;
+}
+
+#btn-add-book {
+  height: 40px;
+  width: 120px;
+  margin: auto 200px auto -200px;
+}
