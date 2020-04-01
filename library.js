@@ -1,9 +1,10 @@
+"use strict";
+
 const myLibrary = [new Book('Things', 'Marge', 39, false),
                 new Book('Other Things', 'Not Marge', 387, true)];
 
 window.onload = (e) => {
-  render();
-  setEventListeners();
+  resetTable();
 };
 
 function Book(title, author, pages, read) {
@@ -14,7 +15,7 @@ function Book(title, author, pages, read) {
 }
 
 Book.prototype.readStatus = function() {
-  this.read === true ? this.read = false : this.read = true;
+  this.read = !this.read;
 };
 
 function createBook(bookArgs) {
@@ -27,7 +28,7 @@ function render() {
     let title = setElementAttributes('td', `book-title-${index}`, book.title);
     let author = setElementAttributes('td', `book-author-${index}`, book.author);
     let pages = setElementAttributes('td', `book-pages-${index}`, book.pages);
-    let read = setElementAttributes('td', `book-read-${index}`, book.read);
+    let read = createReadButton(index, book.read);
     let deleteButton = createDeleteButton(index);
     addRowToTable(title, author, pages, read, deleteButton);
   })
@@ -46,7 +47,18 @@ function createNewRow(values) {
   let author = setElementAttributes('td', `book-author-${index}`, values[1]);
   let pages = setElementAttributes('td', `book-pages-${index}`, values[2]);
   let deleteButton = createDeleteButton(index);
-  addRowToTable(title, author, pages, false, deleteButton)
+  addRowToTable(title, author, pages, createReadButton(index, false), deleteButton)
+}
+
+function createReadButton(index, initialValue) {
+  let readButtonCell = document.createElement('td');
+  let readButton = setElementAttributes('button', `btn-read-${index}`);
+  readButton.addEventListener('click', () => {
+    toggleRead(index);
+  });
+  readButton.textContent = initialValue === true ? 'Yes' : 'No';
+  readButtonCell.appendChild(readButton);
+  return readButtonCell;
 }
 
 function createDeleteButton(index) {
@@ -55,7 +67,7 @@ function createDeleteButton(index) {
   deleteImage.src = 'delete.svg';
   deleteImage.dataset.row = index;
   deleteImage.addEventListener('click', (e) => {
-    destroyRow(index);
+    destroyRowInLibrary(index);
     resetTable();
   });
   deleteButton.appendChild(deleteImage);
@@ -93,7 +105,7 @@ function destroyTable() {
   }
 }
 
-function destroyRow(index) {
+function destroyRowInLibrary(index) {
   myLibrary.splice(index, 1)
 }
 
@@ -129,6 +141,12 @@ function toggleError(badInput = true) {
   } else {
     error.style.display = 'none';
   }
+}
+
+function toggleRead(index) {
+  myLibrary[index].readStatus();
+  let read = document.querySelector(`.btn-read-${index}`);
+  read.textContent = myLibrary[index].read ? 'Yes' : 'No';
 }
 
 function getLastTableIndex() {
