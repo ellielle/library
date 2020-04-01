@@ -15,47 +15,45 @@ function Book(title, author, pages, read) {
 }
 
 Book.prototype.info = function() {
-
+  // FIXME this probably gets removed?
 
   return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read ? 'have read' : 'not read yet'}`
 };
 
-Book.prototype.readStatus = function () {
-  alert('swap read status');
+Book.prototype.readStatus = function() {
+  this.read === true ? this.read = false : this.read = true;
 };
 
-function addBookToLibrary() {
-  let title = prompt('Enter the title: ');
-  let author = prompt('Enter the author: ');
-  let pages = prompt('Enter the no. of pages: ');
-  let read = '';
-  read = prompt('Have you read the book? (yes/no): ');
-  read === 'yes' ? read = true : read = false;
-  myLibrary.push(new Book(title, author, pages, read));
-  render();
-}
-
 function createBook(bookArgs) {
-  let newBook = new Book(...bookArgs);
+  let newBook = new Book(...bookArgs, false);
   myLibrary.push(newBook)
 }
 
 function render() {
   myLibrary.forEach((book, index) => {
-    let row = document.createElement('tr');
-    let table = document.querySelector('.library-table-body');
     let title = setElementAttributes('td', `book-title-${index}`, book.title);
     let author = setElementAttributes('td', `book-author-${index}`, book.author);
     let pages = setElementAttributes('td', `book-pages-${index}`, book.pages);
     let read = setElementAttributes('td', `book-read-${index}`, book.read);
     let deleteButton = createDeleteButton(index);
-    addRowToTable(row, table, title, author, pages, read, deleteButton);
+    addRowToTable(title, author, pages, read, deleteButton);
   })
 }
 
-function addRowToTable(row, table, title, author, pages, read, deleteButton) {
+function addRowToTable(title, author, pages, read, deleteButton) {
+  let row = document.createElement('tr');
+  let table = document.querySelector('.library-table-body');
   row.append(title, author, pages, read, deleteButton);
   table.appendChild(row)
+}
+
+function createNewRow(values) {
+  let index = getLastTableIndex();
+  let title = setElementAttributes('td', `book-title-${index}`, values[0]);
+  let author = setElementAttributes('td', `book-author-${index}`, values[1]);
+  let pages = setElementAttributes('td', `book-pages-${index}`, values[2]);
+  let deleteButton = createDeleteButton(index);
+  addRowToTable(title, author, pages, false, deleteButton)
 }
 
 function createDeleteButton(index) {
@@ -87,10 +85,13 @@ function setEventListeners() {
   });
   document.querySelector('#book-form-btn').addEventListener('click', (e) => {
     let formValues = getFormValues();
-
+    if (formValues.length === 3 && +formValues[2] > 0) {
+      createBook(formValues);
+      createNewRow(formValues);
+      clearInputs();
+    }
     // TODO call method to add values to table
-
-
+    // TODO rethink createBook() up top (?)
   });
 }
 
@@ -102,6 +103,7 @@ function destroyTable() {
 
 function destroyRow(index) {
   alert('BLOW UP')
+  // TODO unfinished
 }
 
 function resetTable() {
@@ -135,4 +137,14 @@ function toggleError(badInput = true) {
   } else {
     error.style.display = 'none';
   }
+}
+
+function getLastTableIndex() {
+  return Number(document.querySelector('.library-table tr:last-child td:last-child img').dataset.row) + 1
+}
+
+function clearInputs() {
+  document.querySelector('#book-form-title').value = '';
+  document.querySelector('#book-form-author').value = '';
+  document.querySelector('#book-form-pages').value = '';
 }
