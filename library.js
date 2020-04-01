@@ -1,4 +1,3 @@
-const container = document.querySelector('.container');
 const myLibrary = [new Book('Things', 'Marge', 39, false),
                 new Book('Other Things', 'Not Marge', 387, true)];
 
@@ -13,12 +12,6 @@ function Book(title, author, pages, read) {
   this.pages = pages;
   this.read = read;
 }
-
-Book.prototype.info = function() {
-  // FIXME this probably gets removed?
-
-  return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read ? 'have read' : 'not read yet'}`
-};
 
 Book.prototype.readStatus = function() {
   this.read === true ? this.read = false : this.read = true;
@@ -62,11 +55,8 @@ function createDeleteButton(index) {
   deleteImage.src = 'delete.svg';
   deleteImage.dataset.row = index;
   deleteImage.addEventListener('click', (e) => {
-
-    // TODO add event to delete line
-    // TODO use data-* attributes, they are easily accessed with JS
-
     destroyRow(index);
+    resetTable();
   });
   deleteButton.appendChild(deleteImage);
   return deleteButton;
@@ -90,25 +80,27 @@ function setEventListeners() {
       createNewRow(formValues);
       clearInputs();
     }
-    // TODO call method to add values to table
-    // TODO rethink createBook() up top (?)
   });
 }
 
 function destroyTable() {
-  while (container.firstChild) {
-    container.removeChild(container.lastChild);
+
+  // FIXME Add Book button doesn't collapse after every other submission
+
+  let table = document.querySelector('.library-table-body');
+  while (table.childNodes.length > 2) {
+    table.removeChild(table.lastChild);
   }
 }
 
 function destroyRow(index) {
-  alert('BLOW UP')
-  // TODO unfinished
+  myLibrary.splice(index, 1)
 }
 
 function resetTable() {
   destroyTable();
   render();
+  setEventListeners();
 }
 
 function getFormValues() {
