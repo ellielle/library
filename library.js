@@ -1,9 +1,15 @@
 "use strict";
-
-const myLibrary = [new Book('Things', 'Marge', 39, false),
-                new Book('Other Things', 'Not Marge', 387, true)];
+const myLibrary = [];
 
 window.onload = (e) => {
+  if (storageAvailable()) {
+    if (window['localStorage'].length === 0) {
+      myLibrary.push(new Book('Things', 'Margey Marge', 39, false),
+        new Book('Other Things', 'Not Marge', 387, true));
+    } else {
+      readLibraryData();
+    }
+  }
   resetTable();
 };
 
@@ -20,7 +26,8 @@ Book.prototype.readStatus = function() {
 
 function createBook(bookArgs) {
   let newBook = new Book(...bookArgs, false);
-  myLibrary.push(newBook)
+  myLibrary.push(newBook);
+  saveLibraryData();
 }
 
 function render() {
@@ -32,6 +39,32 @@ function render() {
     let deleteButton = createDeleteButton(index);
     addRowToTable(title, author, pages, read, deleteButton);
   })
+}
+
+function storageAvailable() {
+  try {
+    let storage = window['localStorage'];
+    let test = '__storage_test__';
+    storage.setItem(test, test);
+    storage.removeItem(test);
+    return true;
+  }
+  catch(e) {
+    return e instanceof DOMException
+  }
+}
+
+function readLibraryData() {
+  let newLibrary = JSON.parse(localStorage.getItem('library'));
+  newLibrary.forEach(entry => {
+    myLibrary.push(new Book(entry.title, entry.author, entry.pages, entry.read));
+  });
+}
+
+function saveLibraryData() {
+  if (storageAvailable()) {
+    localStorage.setItem('library', JSON.stringify(myLibrary));
+  }
 }
 
 function addRowToTable(title, author, pages, read, deleteButton) {
@@ -96,9 +129,6 @@ function setEventListeners() {
 }
 
 function destroyTable() {
-
-  // FIXME Add Book button doesn't collapse after every other submission
-
   let table = document.querySelector('.library-table-body');
   while (table.childNodes.length > 2) {
     table.removeChild(table.lastChild);
@@ -106,7 +136,8 @@ function destroyTable() {
 }
 
 function destroyRowInLibrary(index) {
-  myLibrary.splice(index, 1)
+  myLibrary.splice(index, 1);
+  saveLibraryData();
 }
 
 function resetTable() {
@@ -147,6 +178,7 @@ function toggleRead(index) {
   myLibrary[index].readStatus();
   let read = document.querySelector(`.btn-read-${index}`);
   read.textContent = myLibrary[index].read ? 'Yes' : 'No';
+  saveLibraryData();
 }
 
 function getLastTableIndex() {
