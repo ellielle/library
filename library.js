@@ -120,7 +120,8 @@ function setEventListeners() {
   });
   document.querySelector('#book-form-btn').addEventListener('click', (e) => {
     let formValues = getFormValues();
-    if (formValues.length === 3 && +formValues[2] > 0) {
+    checkForError(formValues);
+    if (formValues.length === 3 && +formValues[2] > 0 && (formValues[0]) && formValues[1] !== '') {
       createBook(formValues);
       createNewRow(formValues);
       clearInputs();
@@ -147,17 +148,17 @@ function resetTable() {
 }
 
 function getFormValues() {
-  let formValues = [document.querySelector('#book-form-title').value,
+  return [document.querySelector('#book-form-title').value,
     document.querySelector('#book-form-author').value,
     document.querySelector('#book-form-pages').value];
-  formValues.forEach((value, index) => {
-    if (value === '' || (index === 2 && isNaN(value))) {
-      toggleError();
-    } else {
-      toggleError(false);
-    }
-  });
-  return formValues;
+}
+
+function checkForError(formValues) {
+  if (formValues.includes('')) {
+    toggleError();
+  } else {
+    toggleError(false);
+  }
 }
 
 function toggleForm() {
