@@ -13,16 +13,18 @@ window.onload = (e) => {
   resetTable();
 };
 
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-}
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+  }
 
-Book.prototype.readStatus = function() {
-  this.read = !this.read;
-};
+  readStatus() {
+    this.read = !this.read;
+  }
+}
 
 function createBook(bookArgs) {
   let newBook = new Book(...bookArgs, false);
